@@ -1,6 +1,7 @@
 Feedsqueeze, a feed reader built on Google App Engine.
 Copyright 2011 Matt Kenney
 Source code: https://github.com/mattkenney/feedsqueeze
+Language: Python 2.5
 License: GNU Affero General Public License
 
 Feedsqueeze uses:
