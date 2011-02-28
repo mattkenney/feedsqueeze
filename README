@@ -1,0 +1,13 @@
+Feedsqueeze, a feed reader.
+Copyright 2011 Matt Kenney
+Source code: https://github.com/mattkenney/feedsqueeze
+
+Feedsqueeze uses:
+1. Google App Engine, http://code.google.com/appengine/
+2. Universal Feed Parser, http://www.feedparser.org/, by Mark Pilgrim
+3. Beautiful Soup, http://www.crummy.com/software/BeautifulSoup/, by Leonard
+   Richardson
+4. py-dom-xpath, http://code.google.com/p/py-dom-xpath/
+5. Yapps 2, http://theory.stanford.edu/~amitp/yapps/, by Amit J. Patel.
+
+Versions of these libraries are included here for convenience.

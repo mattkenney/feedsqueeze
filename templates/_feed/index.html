@@ -1,0 +1,48 @@
+{% extends "_base.html" %}
+{% comment %}
+
+Copyright 2011 Matt Kenney
+
+This file is part of Feedsqueeze.
+
+Feedsqueeze is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+Feedsqueeze is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% block content %}
+<div class="setup">
+{% if errors %}
+<ul class="error">
+{% for error in errors %}
+<li>{{ error }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+<form method="post" action="{{ handler.request.path }}">
+<table>
+<tbody>
+<tr><td class="required">Name:</td><td><input name="feedName" size="53" type="text" value="{{ parameters.feedName }}" /></td></tr>
+<tr><td class="required">URL:</td><td><input name="feedUrl" size="53" type="text" value="{{ parameters.feedUrl }}" /></td></tr>
+<tr><td>Use GUID:</td><td><input{% if parameters.useGuid %} checked="checked"{% endif %} name="useGuid" type="checkbox" value="Y" />
+<tr><td>Remove URL Prefix:</td><td><input name="prefixRemove" size="53" type="text" value="{{ parameters.prefixRemove }}" /></td></tr>
+<tr><td>Add URL Prefix:</td><td><input name="prefixAdd" size="53" type="text" value="{{ parameters.prefixAdd }}" /></td></tr>
+<tr><td>Remove URL Suffix:</td><td><input name="suffixRemove" size="53" type="text" value="{{ parameters.suffixRemove }}" /></td></tr>
+<tr><td>Add URL Suffix:</td><td><input name="suffixAdd" size="53" type="text" value="{{ parameters.suffixAdd }}" /></td></tr>
+<tr valign="top"><td>XPath:</td><td><textarea cols="60" name="xpath" rows="3">{{ parameters.xpath }}</textarea></td></tr>
+<tr><td colspan="2"><input type="submit" value="Save" /> <input name="cancel" type="submit" value="Cancel" /></td></tr>
+</tbody>
+</table>
+</form>
+Note: Feedsqueeze purges article listings after 60 days, whether you've read them or not.
+</div>
+{% endblock %}

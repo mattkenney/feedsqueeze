@@ -1,0 +1,59 @@
+{% extends "_base.html" %}
+{% comment %}
+
+Copyright 2011 Matt Kenney
+
+This file is part of Feedsqueeze.
+
+Feedsqueeze is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+Feedsqueeze is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% block content %}
+<div class="buttons">
+<form method="post" action="/">
+<table class="wide"><tr><td>
+<input name="feed" type="hidden" value="{{ parameters.feed }}" />
+<input name="show" type="hidden" value="{{ parameters.show }}" />
+<input type="submit" name="next.{{ article.articleUrl }}" value="Hide &#38; Next" />
+<input type="submit" name="hide.{{ article.articleUrl }}" value="Hide &#38; Return" />
+<input type="submit" value="Return" />
+</td></tr></table>
+</form>
+</div>
+<div class="content">
+<div class="title">{{ article.feedName }} - {{ article.articleName|safe }}</div>
+<div class="dateline">{{ article.articleDate|date:"Y-m-d H:i:s" }}
+{% if article.category %} - {{ article.category }}{% endif %}
+- {{ content|length|format_IEEE1541 }}</div>
+<div>&#160;</div>
+<div>{{ content|safe }}</div>
+<div>&#160;</div>
+</div>
+<div class="footer">
+<form method="post" action="/">
+<table class="wide"><tr><td>
+<input name="feed" type="hidden" value="{{ parameters.feed }}" />
+<input name="show" type="hidden" value="{{ parameters.show }}" />
+<input name="next.{{ article.articleUrl }}" type="submit" value="Hide &#38; Next" />
+<input name="hide.{{ article.articleUrl }}" type="submit" value="Hide &#38; Return" />
+<input type="submit" value="Return" />
+</td></tr></table>
+<table class="wide"><tr><td>
+<a href="{{ article.articleUrl }}">source</a>
+</td><td class="right">
+<a href="/feed/{{ article.feedUrl|encode_segment }}/">setup</a>
+</td></tr></table>
+</form>
+</div>
+{% endblock %}
