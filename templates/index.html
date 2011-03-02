@@ -42,7 +42,7 @@ Feedsqueeze
 </table></div><div class="index"><table class="index-table">
 {% for art in articles %}
 <tr class="{% cycle 'even' 'odd' %}">
-<td class="feedname" valign="top">{{ art.feedName }}<br />
+<td class="feedname" nowrap="nowrap" valign="top">{{ art.feedName }}<br />
 {% if art.read > now %}
 <input type="submit" name="hide.{{ art.articleUrl }}" value="Hide" />
 {% else %}

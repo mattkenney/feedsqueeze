@@ -155,10 +155,11 @@ def get_feed_list(user):
     subs = Subscription.all().filter('user = ', user).order('feedName')
     return [ (sub.feedName, sub.counter) for sub in subs ]
 
-def increment_counter(key, amount):
+def increment_counter(key, amount, updated):
     obj = db.get(key)
     obj.counter = amount + (obj.counter if obj.counter else 0)
-    obj.updated = datetime.datetime.utcnow()
+    if updated:
+        obj.updated = updated
     obj.put()
 
 def set_status_read(user, articleUrl, read):
@@ -170,9 +171,9 @@ def set_status_read(user, articleUrl, read):
             stat.put()
             sub = Subscription.all().filter('user = ', user).filter('feedUrl = ', stat.feedUrl).get()
             if sub and oldRead == datetime.datetime.max:
-                db.run_in_transaction(increment_counter, sub.key(), -1)
+                db.run_in_transaction(increment_counter, sub.key(), -1, None)
             elif sub and read == datetime.datetime.max:
-                db.run_in_transaction(increment_counter, sub.key(), 1)
+                db.run_in_transaction(increment_counter, sub.key(), 1, None)
     return stat
 
 def soup2dom(src, dst=None, doc=None):
@@ -260,4 +261,4 @@ def update_user(user):
                 read=datetime.datetime.max
                 ).put()
             count = count + 1
-        db.run_in_transaction(increment_counter, sub.key(), count)
+        db.run_in_transaction(increment_counter, sub.key(), count, now)
