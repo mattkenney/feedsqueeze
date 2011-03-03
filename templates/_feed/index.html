@@ -42,6 +42,7 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <tr><td colspan="2"><input type="submit" value="Save" /> <input name="cancel" type="submit" value="Cancel" /></td></tr>
 </tbody>
 </table>
+<input name="next" type="hidden" value="{{ handler.request.headers.Referer }}" />
 </form>
 Note: Feedsqueeze purges article listings after 60 days, whether you've read them or not.
 </div>

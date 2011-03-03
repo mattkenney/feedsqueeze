@@ -35,8 +35,11 @@ def action(handler):
             handler.sendError(404)
             return True
     if handler.method == 'POST':
+        next = handler.request.get('next')
+        if not next:
+            next = '../' if feedUrl else '../feed/'
         if handler.request.get('cancel'):
-            handler.sendRedirect('../')#index.html')
+            handler.sendRedirect(next)
             return True
         feedUrl = handler.request.get('feedUrl').strip()
         feedName = handler.request.get('feedName').strip()
@@ -45,10 +48,8 @@ def action(handler):
         elif not feedName:
             handler.context.setdefault('errors', []).append('Name is required')
         else:
-            #path = '../'
             if not sub:
                 sub = feeds.Subscription()
-            #    path = ''
             sub.user = users.get_current_user()
             sub.feedUrl = feedUrl
             sub.feedName = feedName
@@ -66,7 +67,7 @@ def action(handler):
             feed.feedUrl = feedUrl
             feed.accessed = datetime.datetime.utcnow()
             feed.put()
-            handler.sendRedirect('../')#path + library.shared.encode_segment(feedUrl) + '/')
+            handler.sendRedirect(next)
             return True
     elif sub:
         handler.context['parameters']['feedUrl'] = sub.feedUrl
