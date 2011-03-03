@@ -20,6 +20,7 @@ import cgi
 import datetime
 import logging
 import pprint
+import traceback
 import urllib
 import urlparse
 import xml.dom.minidom
@@ -144,7 +145,13 @@ def get_article_content(stat):
             result += '\n'
         else:
             result = ''
-        result += '<pre>' + escape(url) + '\n\n' + escape(str(err)) + '</pre>'
+        result += '<pre>\n'
+        result += escape(url)
+        result += '\n\n'
+        result += escape(str(err))
+        result += '\n</pre>\n<!--\n'
+        result += escape(traceback.format_exc())
+        result += '\n-->'
 
     return result
 
