@@ -155,13 +155,6 @@ def get_article_content(stat):
 
     return result
 
-def get_feed_list(user):
-    if not memcache.get(user.email()):
-        update_user(user)
-        memcache.add(user.email(), True, 600)
-    subs = Subscription.all().filter('user = ', user).order('feedName')
-    return [ (sub.feedName, sub.counter) for sub in subs ]
-
 def increment_counter(key, amount, updated):
     obj = db.get(key)
     obj.counter = amount + (obj.counter if obj.counter else 0)
@@ -269,3 +262,8 @@ def update_user(user):
                 ).put()
             count = count + 1
         db.run_in_transaction(increment_counter, sub.key(), count, now)
+
+def update_user_maybe(user):
+    if not memcache.get(user.email()):
+        update_user(user)
+        memcache.add(user.email(), True, 600)

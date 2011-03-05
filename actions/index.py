@@ -26,6 +26,7 @@ import library.shared
 
 def action(handler):
     user = users.get_current_user()
+    feeds.update_user_maybe(user)
     now = datetime.datetime.utcnow()
     handler.context['now'] = now
 
@@ -59,7 +60,8 @@ def action(handler):
                         handler.sendRedirect(path)
                         return True
 
-    handler.context['feeds'] = feeds.get_feed_list(user)
+    subs = feeds.Subscription.all().filter('user = ', user).order('feedName')
+    handler.context['feeds'] = [ (sub.feedName, sub.counter) for sub in subs ]
 
     query = feeds.Status.all().filter('user = ', user).order('-articleDate')
     if not showFilter == 'all':
