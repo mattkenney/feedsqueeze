@@ -49,7 +49,7 @@ Feedsqueeze
 <input type="submit" name="show.{{ art.articleUrl }}" value="Show" />
 {% endif %}
 </td>
-<td class="index-title">{% if art.read > now %}<b>{% endif %}<a href="/read/{{ art.articleUrl|encode_segment }}/{{ qs }}">{{ art.articleName|safe }}</a>{% if art.read > now %}</b>{% endif %}<br />
+<td class="index-title">{% if art.read > now %}<b>{% endif %}<a href="/read/{{ art.articleUrl|encode_segment }}/{{ qs }}">{{ art.articleName|default:"<i>no title</i>"|safe }}</a>{% if art.read > now %}</b>{% endif %}<br />
 {{ art.articleDate|date:"Y-m-d H:i:s" }}{% if art.category %} - {{ art.category }}{% endif %}</td>
 </tr>
 {% endfor %}
