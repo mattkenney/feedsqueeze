@@ -25,11 +25,12 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <table class="wide"><tr><td>
 <input name="feed" type="hidden" value="{{ parameters.feed }}" />
 <input name="show" type="hidden" value="{{ parameters.show }}" />
-<input type="submit" name="next.{{ article.articleUrl }}" value="Hide &#38; Next" />
-<input type="submit" name="hide.{{ article.articleUrl }}" value="Hide &#38; Return" />
+<input id="hide-next" name="next.{{ article.articleUrl }}" type="submit" value="Hide &#38; Next" />
+<input name="hide.{{ article.articleUrl }}" type="submit" value="Hide &#38; Return" />
 <input type="submit" value="Return" />
 </td></tr></table>
 </form>
+<script type="text/javascript">document.getElementById('hide-next').focus()</script>
 </div>
 <div class="content">
 <div class="title">{{ article.feedName }} - {{ article.articleName|safe }}</div>
