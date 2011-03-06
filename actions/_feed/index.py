@@ -41,8 +41,8 @@ def action(handler):
         if handler.request.get('cancel'):
             handler.sendRedirect(next)
             return True
-        feedUrl = handler.request.get('feedUrl').strip()
-        feedName = handler.request.get('feedName').strip()
+        feedUrl = handler.request.get('feedUrl')[0:1024].strip()
+        feedName = handler.request.get('feedName')[0:16].strip()
         if not feedUrl:
             handler.context.setdefault('errors', []).append('Url is required')
         elif not feedName:
@@ -54,12 +54,12 @@ def action(handler):
             sub.feedUrl = feedUrl
             sub.feedName = feedName
             sub.useGuid = True if handler.request.get('useGuid') else False
-            sub.prefixRemove = handler.request.get('prefixRemove').strip()
-            sub.prefixAdd = handler.request.get('prefixAdd').strip()
-            sub.suffixRemove = handler.request.get('suffixRemove').strip()
-            sub.suffixAdd = handler.request.get('suffixAdd').strip()
-            sub.xpath = handler.request.get('xpath').strip()
-            sub.extra = ','.join(handler.request.get_all('extra'))
+            sub.prefixRemove = handler.request.get('prefixRemove')[0:1024].strip()
+            sub.prefixAdd = handler.request.get('prefixAdd')[0:1024].strip()
+            sub.suffixRemove = handler.request.get('suffixRemove')[0:1024].strip()
+            sub.suffixAdd = handler.request.get('suffixAdd')[0:1024].strip()
+            sub.xpath = handler.request.get('xpath')[0:8096].strip()
+            sub.extra = ','.join(handler.request.get_all('extra'))[0:1024].strip()
             sub.put()
             feed = feeds.Feed.all().filter('feedUrl = ', feedUrl).get()
             if not feed:

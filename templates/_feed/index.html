@@ -31,14 +31,14 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <form method="post" action="{{ handler.request.path }}">
 <table>
 <tbody>
-<tr><td class="required">Name:</td><td><input name="feedName" size="53" type="text" value="{{ parameters.feedName }}" /></td></tr>
-<tr><td class="required">URL:</td><td><input name="feedUrl" size="53" type="text" value="{{ parameters.feedUrl }}" /></td></tr>
-<tr><td>Use GUID:</td><td><input{% if parameters.useGuid %} checked="checked"{% endif %} name="useGuid" type="checkbox" value="Y" />
-<tr><td>Remove URL Prefix:</td><td><input name="prefixRemove" size="53" type="text" value="{{ parameters.prefixRemove }}" /></td></tr>
-<tr><td>Add URL Prefix:</td><td><input name="prefixAdd" size="53" type="text" value="{{ parameters.prefixAdd }}" /></td></tr>
-<tr><td>Remove URL Suffix:</td><td><input name="suffixRemove" size="53" type="text" value="{{ parameters.suffixRemove }}" /></td></tr>
-<tr><td>Add URL Suffix:</td><td><input name="suffixAdd" size="53" type="text" value="{{ parameters.suffixAdd }}" /></td></tr>
-<tr valign="top"><td>XPath:</td><td><textarea cols="60" name="xpath" rows="3">{{ parameters.xpath }}</textarea></td></tr>
+<tr><td class="required">Name:</td><td class="field"><input maxlength="16" name="feedName" size="18" type="text" value="{{ parameters.feedName }}" /></td></tr>
+<tr><td class="required">URL:</td><td class="field"><input name="feedUrl" size="48" type="text" value="{{ parameters.feedUrl }}" /></td></tr>
+<tr><td>Use GUID:</td><td class="field"><input{% if parameters.useGuid %} checked="checked"{% endif %} name="useGuid" type="checkbox" value="Y" />
+<tr><td>Remove URL Prefix:</td><td class="field"><input name="prefixRemove" size="48" type="text" value="{{ parameters.prefixRemove }}" /></td></tr>
+<tr><td>Add URL Prefix:</td><td class="field"><input name="prefixAdd" size="48" type="text" value="{{ parameters.prefixAdd }}" /></td></tr>
+<tr><td>Remove URL Suffix:</td><td class="field"><input name="suffixRemove" size="48" type="text" value="{{ parameters.suffixRemove }}" /></td></tr>
+<tr><td>Add URL Suffix:</td><td class="field"><input name="suffixAdd" size="48" type="text" value="{{ parameters.suffixAdd }}" /></td></tr>
+<tr valign="top"><td>XPath:</td><td class="field"><textarea cols="48" name="xpath" rows="3">{{ parameters.xpath }}</textarea></td></tr>
 <tr><td colspan="2"><input type="submit" value="Save" /> <input name="cancel" type="submit" value="Cancel" /></td></tr>
 </tbody>
 </table>

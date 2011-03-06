@@ -80,6 +80,11 @@ td
     width:5.5em;
 }
 
+.field
+{
+    vertical-align:bottom;
+}
+
 .footer
 {
     border-top:1px solid #cbc1b7;
