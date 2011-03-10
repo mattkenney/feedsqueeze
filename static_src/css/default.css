@@ -144,6 +144,11 @@ td
     margin:0.5ex;
 }
 
+.single
+{
+    font-size:90%;
+}
+
 .title
 {
     font-style:italic;
