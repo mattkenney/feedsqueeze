@@ -65,7 +65,7 @@ def action(handler):
                         return True
 
     subs = feeds.Subscription.all().filter('user = ', user).order('feedName')
-    handler.context['feeds'] = [ (sub.feedName, sub.counter) for sub in subs ]
+    handler.context['feeds'] = [ sub for sub in subs ]
 
     query = feeds.Status.all().filter('user = ', user).order('-articleDate')
     if not showFilter == 'all':
@@ -78,5 +78,11 @@ def action(handler):
 
     if offset > 0:
         handler.context['newer'] = qs + ('&' if qs else '?') + 'offset=' + str(offset - 50)
+    elif not showFilter == 'all' and len(handler.context['articles']) == 0:
+        for sub in handler.context['feeds']:
+            if not feedFilter or feedFilter == sub.feedName:
+                sub.counter = 0
+                sub.put()
+
     if len(handler.context['articles']) == 50:
         handler.context['older'] = qs + ('&' if qs else '?') + 'offset=' + str(offset + 50)

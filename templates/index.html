@@ -30,7 +30,7 @@ Feedsqueeze
 <td class="narrow"><select name="feed" onchange="this.form.submit();">
 <option value="">All Feeds</option>
 {% for row in feeds %}
-<option{% ifequal row.0 parameters.feed %} selected="selected"{% endifequal %} value="{{ row.0 }}">{{ row.0 }}{% if row.1 %} ({{ row.1 }}){% endif %}</option>
+<option{% ifequal row.feedName parameters.feed %} selected="selected"{% endifequal %} value="{{ row.feedName }}">{{ row.feedName }}{% if row.counter %} ({{ row.counter }}){% endif %}</option>
 {% endfor %}
 </select></td>
 <td class="narrow"><select name="show" onchange="this.form.submit();"><option value="">Unread</option>
