@@ -26,6 +26,7 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <input name="feed" type="hidden" value="{{ parameters.feed }}" />
 <input name="show" type="hidden" value="{{ parameters.show }}" />
 <input id="hide-next" name="next.{{ article.articleUrl }}" type="submit" value="Hide &#38; Next" />
+<input name="skip.{{ article.articleUrl }}" type="submit" value="Next" />
 <input name="hide.{{ article.articleUrl }}" type="submit" value="Hide &#38; Return" />
 <input type="submit" value="Return" />
 </td></tr></table>
@@ -47,6 +48,7 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <input name="feed" type="hidden" value="{{ parameters.feed }}" />
 <input name="show" type="hidden" value="{{ parameters.show }}" />
 <input name="next.{{ article.articleUrl }}" type="submit" value="Hide &#38; Next" />
+<input name="skip.{{ article.articleUrl }}" type="submit" value="Next" />
 <input name="hide.{{ article.articleUrl }}" type="submit" value="Hide &#38; Return" />
 <input type="submit" value="Return" />
 </td></tr></table>

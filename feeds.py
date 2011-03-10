@@ -95,7 +95,7 @@ def get_article_content(stat):
         #if not encoding:
         #    encoding = 'ISO-8859-1'
         base, params = cgi.parse_header(f.info().getheader('Content-Type'))
-        encoding = params.get('charset', 'ISO-8859-1')
+        encoding = params.get('charset')#, 'ISO-8859-1')
         f.close()
 
         # tag soup parse the article
@@ -164,7 +164,7 @@ def increment_counter(key, amount, updated):
 
 def set_status_read(user, articleUrl, read):
     stat = Status.all().filter('user = ', user).filter('articleUrl = ', articleUrl).get()
-    if stat:
+    if stat and read:
         oldRead = stat.read
         if read != oldRead:
             stat.read = read

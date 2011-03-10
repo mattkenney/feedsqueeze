@@ -44,11 +44,15 @@ def action(handler):
 
     if handler.method == 'POST':
         for name in handler.request.arguments():
-            if name.startswith('hide.') or name.startswith('next.') or name.startswith('show.'):
-                read = datetime.datetime.max if name.startswith('show.') else now
+            if name.startswith('hide.') or name.startswith('next.') or name.startswith('show.') or name.startswith('skip.'):
+                read = None
+                if name.startswith('hide.') or name.startswith('next.'):
+                    read = now
+                elif name.startswith('show.'):
+                    read = datetime.datetime.max
                 stat = feeds.set_status_read(user, name[5:], read)
-                if stat and name.startswith('next.'):
-                    query = feeds.Status.all().filter('user = ', user).order('articleDate').filter('articleDate >= ', stat.articleDate)
+                if stat and (name.startswith('next.') or name.startswith('skip.')):
+                    query = feeds.Status.all().filter('user = ', user).order('articleDate').filter('articleDate > ', stat.articleDate)
                     if not showFilter == all:
                         query.filter('read = ', datetime.datetime.max)
                     if feedFilter:
