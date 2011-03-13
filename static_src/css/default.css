@@ -149,6 +149,19 @@ td
     font-size:90%;
 }
 
+.testout
+{
+    margin-top:1ex;
+}
+
+.testout-pre
+{
+    background-color:#fff;
+    border:1px solid #cbc1b7;
+    margin:0.5ex;
+    padding:0.5ex;
+}
+
 .title
 {
     font-style:italic;

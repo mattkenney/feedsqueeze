@@ -39,11 +39,22 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <tr><td>Remove URL Suffix:</td><td class="field"><input name="suffixRemove" size="48" type="text" value="{{ parameters.suffixRemove }}" /></td></tr>
 <tr><td>Add URL Suffix:</td><td class="field"><input name="suffixAdd" size="48" type="text" value="{{ parameters.suffixAdd }}" /></td></tr>
 <tr valign="top"><td>XPath:</td><td class="field"><textarea cols="48" name="xpath" rows="3">{{ parameters.xpath }}</textarea></td></tr>
-<tr><td colspan="2"><input type="submit" value="Save" /> <input name="cancel" type="submit" value="Cancel" /></td></tr>
+<tr><td colspan="2">
+<input type="submit" value="Save" />
+<input name="test" type="submit" value="Test" />
+<input name="cancel" type="submit" value="Cancel" />
+<input name="delete" onclick="return confirm('Delete this feed? This action cannot be undone.')" type="submit" value="Delete" />
+</td></tr>
 </tbody>
 </table>
-<input name="next" type="hidden" value="{{ handler.request.headers.Referer }}" />
+<input name="next" type="hidden" value="{{ next }}" />
 </form>
 Note: Feedsqueeze purges article listings after 60 days, whether you've read them or not.
+{% if testout %}
+<div class="testout">
+Test Result:
+<pre class="testout-pre">{{ testout }}</pre>
+</div>
+{% endif %}
 </div>
 {% endblock %}

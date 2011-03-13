@@ -31,6 +31,8 @@ from google.appengine.api import memcache
 from google.appengine.ext import db
 import xpath
 
+import library.shared
+
 class Feed(db.Expando):
     feedUrl = db.LinkProperty()
     accessed = db.DateTimeProperty()
@@ -71,21 +73,25 @@ class Status(db.Expando):
     created = db.DateTimeProperty()
     read = db.DateTimeProperty()
 
-def get_article_content(stat):
+def get_article_content(articleUrl, articleGuid, sub, lstLog=None):
     result = None
 
+    url = articleUrl
+
     # optionally modify URL before fetching the article
-    url = stat.articleUrl
-    sub = Subscription.all().filter('user = ', stat.user).filter('feedUrl = ', stat.feedUrl).get()
     if sub:
-        if sub.useGuid:
-            url = stat.articleGuid
+        if articleGuid and sub.useGuid:
+            url = articleGuid
         if (sub.prefixRemove or sub.prefixAdd) and url.startswith(sub.prefixRemove):
             url = sub.prefixAdd + url[len(sub.prefixRemove):]
         if (sub.suffixRemove or sub.suffixAdd) and url.endswith(sub.suffixRemove):
             url = url[:(len(url) - len(sub.suffixRemove))] + sub.suffixAdd
 
     try:
+        if lstLog:
+            lstLog.append('fetching url:')
+            lstLog.append(url)
+
         # fetch the article
         f = urllib.urlopen(url)
         raw = f.read()
@@ -113,7 +119,11 @@ def get_article_content(stat):
         # extract the parts we want
         parts = []
         if sub and sub.xpath:
+            if lstLog:
+                lstLog.append('extracting content using xpath...')
             for path in sub.xpath.split('\n'):
+                if lstLog:
+                    lstLog.append(path)
                 parts.extend(xpath.find(path, doc))
         else:
             parts.append(doc.documentElement)
@@ -139,14 +149,21 @@ def get_article_content(stat):
                 result += part.toxml('utf-8')
             result += '</div>'
 
+        if lstLog:
+            lstLog.append('article size:')
+            lstLog.append(library.shared.format_IEEE1541(len(result)))
+
     except Exception, err:
         logging.error("%s", pprint.pformat(err))
         if result:
             result += '\n'
         else:
             result = ''
+        if lstLog:
+            lstLog.append('exception:')
+            lstLog.append(str(err))
         result += '<pre>\n'
-        result += escape(url)
+        result += escape(str(url))
         result += '\n\n'
         result += escape(str(err))
         result += '\n</pre>\n<!--\n'

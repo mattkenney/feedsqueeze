@@ -26,9 +26,7 @@ def action(handler):
     user = users.get_current_user()
     articleUrl = handler.context['path_parameters']['read']
     stat = feeds.Status.all().filter('user = ', user).filter('articleUrl = ', articleUrl).get()
-#    if not stat:
-#        handler.sendError(404)
-#        return True
+    articleGuid = stat.articleGuid if stat else None
+    sub = feeds.Subscription.all().filter('user = ', stat.user).filter('feedUrl = ', stat.feedUrl).get() if stat else None
     handler.context['article'] = stat
-    content = feeds.get_article_content(stat)
-    handler.context['content'] = content
+    handler.context['content'] = feeds.get_article_content(articleUrl, articleGuid, sub)

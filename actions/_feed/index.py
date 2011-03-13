@@ -20,6 +20,7 @@ import datetime
 import logging
 import urllib
 
+import feedparser
 from google.appengine.api import users
 
 import feeds
@@ -28,17 +29,26 @@ import library.shared
 def action(handler):
     sub = None
     user = users.get_current_user()
+    lst = [] if handler.request.get('test') else None
     feedUrl = handler.context['path_parameters'].get('feed', None)
     if feedUrl:
         sub = feeds.Subscription.all().filter('user = ', user).filter('feedUrl = ', feedUrl).get()
         if not sub:
             handler.sendError(404)
             return True
+    next = handler.request.get('next')
+    if not next:
+        next = handler.request.headers.get('Referer')
+    if not next:
+        next = '../' if feedUrl else '../feed/'
+    handler.context['next'] = next
     if handler.method == 'POST':
-        next = handler.request.get('next')
-        if not next:
-            next = '../' if feedUrl else '../feed/'
         if handler.request.get('cancel'):
+            handler.sendRedirect(next)
+            return True
+        if handler.request.get('delete'):
+            if sub:
+                sub.delete()
             handler.sendRedirect(next)
             return True
         feedUrl = handler.request.get('feedUrl')[0:1024].strip()
@@ -60,16 +70,39 @@ def action(handler):
             sub.suffixAdd = handler.request.get('suffixAdd')[0:1024].strip()
             sub.xpath = handler.request.get('xpath')[0:8096].strip()
             sub.extra = ','.join(handler.request.get_all('extra'))[0:1024].strip()
-            sub.put()
-            feed = feeds.Feed.all().filter('feedUrl = ', feedUrl).get()
-            if not feed:
-                feed = feeds.Feed()
-            feed.feedUrl = feedUrl
-            feed.accessed = datetime.datetime.utcnow()
-            feed.put()
-            handler.sendRedirect(next)
-            return True
-    elif sub:
+            if lst is None:
+                sub.put()
+                feed = feeds.Feed.all().filter('feedUrl = ', feedUrl).get()
+                if not feed:
+                    feed = feeds.Feed()
+                feed.feedUrl = feedUrl
+                feed.accessed = datetime.datetime.utcnow()
+                feed.put()
+                handler.sendRedirect(next)
+                return True
+            else:
+                try:
+                    lst.append('fetching and parsing ' + sub.feedUrl)
+                    parser = feedparser.parse(sub.feedUrl)
+                    if hasattr(parser, 'status'):
+                        lst.append('status ' + str(parser.status))
+                    elif hasattr(parser, 'bozo_exception'):
+                        lst.append(str(parser.bozo_exception))
+                    else:
+                        lst.append('feed error')
+                    if not (hasattr(parser, 'entries') and parser.entries):
+                        lst.append('feed has no entries')
+                    else:
+                        lst.append('processing sample entry...')
+                        entry = parser.entries[0]
+                        articleUrl = entry.get('link', '')
+                        articleGuid = entry.get('guid', articleUrl)
+                        feeds.get_article_content(articleUrl, articleGuid, sub, lst)
+                except Exception, e:
+                    lst.append('exception:')
+                    lst.append(str(e))
+                handler.context['testout'] = '\n'.join(lst)
+    if sub:
         handler.context['parameters']['feedUrl'] = sub.feedUrl
         handler.context['parameters']['feedName'] = sub.feedName
         handler.context['parameters']['useGuid'] = 'Y' if sub.useGuid else ''
