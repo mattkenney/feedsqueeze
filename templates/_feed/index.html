@@ -43,7 +43,9 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <input type="submit" value="Save" />
 <input name="test" type="submit" value="Test" />
 <input name="cancel" type="submit" value="Cancel" />
+{% if path_parameters.feed %}
 <input name="delete" onclick="return confirm('Delete this feed? This action cannot be undone.')" type="submit" value="Delete" />
+{% endif %}
 </td></tr>
 </tbody>
 </table>
