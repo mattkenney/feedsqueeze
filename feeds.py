@@ -20,6 +20,7 @@ import cgi
 import datetime
 import logging
 import pprint
+import re
 import traceback
 import urllib
 import urlparse
@@ -32,6 +33,8 @@ from google.appengine.ext import db
 import xpath
 
 import library.shared
+
+hex_char_entity = re.compile('&#x([0-9a-fA-F]+);')
 
 class Feed(db.Expando):
     feedUrl = db.LinkProperty()
@@ -103,6 +106,10 @@ def get_article_content(articleUrl, articleGuid, sub, lstLog=None):
         base, params = cgi.parse_header(f.info().getheader('Content-Type'))
         encoding = params.get('charset')#, 'ISO-8859-1')
         f.close()
+
+        # BeautifulSoup doesn't like hex character entities
+        # so convert them to decimal
+        raw = hex_char_entity.sub(lambda m: '&#' + str(int(m.group(1))) + ';', raw)
 
         # tag soup parse the article
         src = BeautifulSoup.BeautifulSoup(raw, fromEncoding=encoding, convertEntities='xhtml')
