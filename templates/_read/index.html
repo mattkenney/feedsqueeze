@@ -44,6 +44,11 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 </div>
 <div class="footer">
 <form method="post" action="/">
+<table class="wide"><tr><td>
+<a href="{{ article.articleUrl }}" target="_blank">source</a>
+</td><td class="right">
+<a href="/feed/{{ article.feedUrl|encode_segment }}/">setup</a>
+</td></tr></table>
 <table class="wide"><tr><td class="single">
 <input name="feed" type="hidden" value="{{ parameters.feed }}" />
 <input name="show" type="hidden" value="{{ parameters.show }}" />
@@ -51,11 +56,6 @@ along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 <input name="skip.{{ article.articleUrl }}" type="submit" value="Next" />
 <input name="hide.{{ article.articleUrl }}" type="submit" value="Hide &#38; Return" />
 <input type="submit" value="Return" />
-</td></tr></table>
-<table class="wide"><tr><td>
-<a href="{{ article.articleUrl }}" target="_blank">source</a>
-</td><td class="right">
-<a href="/feed/{{ article.feedUrl|encode_segment }}/">setup</a>
 </td></tr></table>
 </form>
 </div>
