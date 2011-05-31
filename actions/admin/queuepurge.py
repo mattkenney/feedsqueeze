@@ -16,10 +16,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 #
-cron:
-- description: feed update
-  url: /admin/update.html
-  schedule: every 15 minutes
-- description: daily purge
-  url: /admin/queuepurge.html
-  schedule: every day 07:00
+
+from google.appengine.api import taskqueue
+
+def action(handler):
+    lst = []
+    purgeUrl = '/admin/purge.html'
+    lst.append('queueing ' + purgeUrl)
+    taskqueue.add(url=purgeUrl)
+    handler.context['log'] = lst
