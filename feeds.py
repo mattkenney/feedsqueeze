@@ -270,6 +270,10 @@ def update_user(user):
     logging.info('updating articles for user %s' , user)
     now = datetime.datetime.utcnow()
     for sub in Subscription.all().filter('user = ', user).order('feedName'):
+        feed = Feed.all().filter('feedUrl = ', sub.feedUrl).get()
+        if feed:
+            feed.accessed = now
+            feed.put()
         count = 0
         for art in Article.all().filter('feedUrl = ', sub.feedUrl).filter('created > ', sub.updated):
             Status(
