@@ -187,18 +187,18 @@ def increment_counter(key, amount, updated):
     obj.put()
 
 def set_status_read(user, articleUrl, read):
-    stat = Status.all().filter('user = ', user).filter('articleUrl = ', articleUrl).get()
-    if stat and read:
-        oldRead = stat.read
-        if read != oldRead:
-            stat.read = read
-            stat.put()
+    result = None
+    for stat in Status.all().filter('user = ', user).filter('articleUrl = ', articleUrl):
+        result = stat
+        if read and stat.read != read:
             sub = Subscription.all().filter('user = ', user).filter('feedUrl = ', stat.feedUrl).get()
-            if sub and oldRead == datetime.datetime.max:
+            if sub and stat.read == datetime.datetime.max:
                 db.run_in_transaction(increment_counter, sub.key(), -1, None)
             elif sub and read == datetime.datetime.max:
                 db.run_in_transaction(increment_counter, sub.key(), 1, None)
-    return stat
+            stat.read = read
+            stat.put()
+    return result
 
 def soup2dom(src, dst=None, doc=None):
     if doc and not dst:
