@@ -19,7 +19,7 @@
 cron:
 - description: feed update
   url: /admin/update.html
-  schedule: every 15 minutes
+  schedule: every 20 minutes
 - description: daily purge
   url: /admin/queuepurge.html
   schedule: every day 07:00

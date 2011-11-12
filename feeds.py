@@ -30,6 +30,7 @@ from xml.sax.saxutils import escape
 import BeautifulSoup
 from google.appengine.api import memcache
 from google.appengine.ext import db
+from google.appengine.runtime import DeadlineExceededError
 import xpath
 
 import library.shared
@@ -162,20 +163,30 @@ def get_article_content(articleUrl, articleGuid, sub, lstLog=None):
 
     except Exception, err:
         logging.error("%s", pprint.pformat(err))
-        if result:
-            result += '\n'
-        else:
-            result = ''
+        text = str(err)
         if lstLog:
             lstLog.append('exception:')
-            lstLog.append(str(err))
-        result += '<pre>\n'
-        result += escape(str(url))
-        result += '\n\n'
-        result += escape(str(err))
-        result += '\n</pre>\n<!--\n'
-        result += escape(traceback.format_exc())
-        result += '\n-->'
+            lstLog.append(text)
+        if text.find('Application Error: 5') >= 0:
+            if result:
+                result += '<br /><br />\n'
+            else:
+                result = ''
+            result += 'The website '
+            result += escape(str(urlparse.urlparse(url).hostname))
+            result += ' is taking too long to respond.'
+        else:
+            if result:
+                result += '\n'
+            else:
+                result = ''
+            result += '<pre>\n'
+            result += escape(str(url))
+            result += '\n\n'
+            result += escape(text)
+            result += '\n</pre>\n<!--\n'
+            result += escape(traceback.format_exc())
+            result += '\n-->'
 
     return result
 
