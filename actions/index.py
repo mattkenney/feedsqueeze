@@ -53,11 +53,10 @@ def action(handler):
                 stat = feeds.set_status_read(user, name[5:], read)
                 if stat and (name.startswith('next.') or name.startswith('skip.')):
                     query = feeds.Status.all().filter('user = ', user).order('articleDate').filter('articleDate > ', stat.articleDate)
-                    if not showFilter == all:
+                    if showFilter != 'all':
                         query.filter('read = ', datetime.datetime.max)
                     if feedFilter:
                         query.filter('feedName = ', feedFilter)
-                    query.order('articleDate')
                     stat = query.get()
                     if stat:
                         path = '/read/' + library.shared.encode_segment(stat.articleUrl) + '/' + qs

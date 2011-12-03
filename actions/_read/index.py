@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Feedsqueeze.  If not, see <http://www.gnu.org/licenses/>.
 #
-import urlparse
-
+from google.appengine.api import taskqueue
 from google.appengine.api import users
 
 import feeds
+import library.shared
 
 def action(handler):
     user = users.get_current_user()
@@ -30,3 +30,15 @@ def action(handler):
     sub = feeds.Subscription.all().filter('user = ', stat.user).filter('feedUrl = ', stat.feedUrl).get() if stat else None
     handler.context['article'] = stat
     handler.context['content'] = feeds.get_article_content(articleUrl, articleGuid, sub)
+
+    # prefetch the next article
+    if stat:
+        params = dict()
+        params['user'] = user.email()
+        params['date'] = stat.articleDate.isoformat()
+        feedFilter = handler.request.get('feed')
+        if feedFilter:
+            params['feed'] = feedFilter
+        if handler.request.get('show') == 'all':
+            params['show'] = 'all'
+        taskqueue.add(url='/admin/prefetch.html', params=params)

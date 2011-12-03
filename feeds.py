@@ -91,6 +91,14 @@ def get_article_content(articleUrl, articleGuid, sub, lstLog=None):
         if (sub.suffixRemove or sub.suffixAdd) and url.endswith(sub.suffixRemove):
             url = url[:(len(url) - len(sub.suffixRemove))] + sub.suffixAdd
 
+    # use cached copy if present
+    key = url
+    if sub and sub.xpath:
+        key = key + ' ' + sub.xpath
+    result = memcache.get(key, 'pageCache')
+    if result:
+        return result
+
     try:
         if lstLog:
             lstLog.append('fetching url:')
@@ -99,12 +107,12 @@ def get_article_content(articleUrl, articleGuid, sub, lstLog=None):
         # fetch the article
         f = urllib.urlopen(url)
         raw = f.read()
-        url = f.geturl()
+        base = f.geturl()
         #app engine getparam() does not work, at least in dev, so use cgi.parse_header instead
         #encoding = f.info().getparam('charset')
         #if not encoding:
         #    encoding = 'ISO-8859-1'
-        base, params = cgi.parse_header(f.info().getheader('Content-Type'))
+        mime, params = cgi.parse_header(f.info().getheader('Content-Type'))
         encoding = params.get('charset')#, 'ISO-8859-1')
         f.close()
 
@@ -118,7 +126,7 @@ def get_article_content(articleUrl, articleGuid, sub, lstLog=None):
         # make relative URLs absolute so they work in our site
         for attr in [ 'action', 'background', 'cite', 'classid', 'codebase', 'data', 'href', 'longdesc', 'profile', 'src', 'usemap' ]:
             for tag in src.findAll(attrs={attr:True}):
-                tag[attr] = urlparse.urljoin(url, tag[attr])
+                tag[attr] = urlparse.urljoin(base, tag[attr])
 
         # sanitize the article markup - remove script, style, and more
         # also convert to xml.dom.minidom so we can use xpath
@@ -160,6 +168,8 @@ def get_article_content(articleUrl, articleGuid, sub, lstLog=None):
         if lstLog:
             lstLog.append('article size:')
             lstLog.append(library.shared.format_IEEE1541(len(result)))
+
+        memcache.set(key, result, 20*60, 0, 'pageCache')
 
     except Exception, err:
         logging.error("%s", pprint.pformat(err))
