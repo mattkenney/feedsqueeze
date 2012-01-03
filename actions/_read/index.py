@@ -20,7 +20,6 @@ from google.appengine.api import taskqueue
 from google.appengine.api import users
 
 import feeds
-import library.shared
 
 def action(handler):
     user = users.get_current_user()
